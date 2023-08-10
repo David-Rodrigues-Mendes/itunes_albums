@@ -21,25 +21,22 @@ Additionally, there is a "favorite" icon that allows the user to see the albums 
 he selected from previous searches
 
 ## Developing Locally
-To run the app in your machine, first make sure you have Rails installed. Then: 
+To run the app in your machine: 
 1. Clone the repo to your local machine:
-``` ruby
+```
 $ git clone https://github.com/david-rodrigues-mendes/itunes_albums.git
 ```
 
-2. Install the needed gems:
-``` ruby
-$ bundle install
-```
+2. Install Docker Compose:
 
-3. Run the application migrations's through:
-``` ruby
-$ rails db:migrate
-```
+Docker Compose is included in Docker Desktop for Windows and macOS.
 
-4. Finally, on the root path run a local server:
-``` ruby
-$ rails server
-```
+- https://github.com/docker/compose
 
-5. Open your browser at `http://localhost:3000` to run the app.
+3. On the root path of the repo, run: 
+```
+$ docker compose up
+```
+Docker Compose will start and run your entire app.
+
+4. Open your browser at `http://localhost:3000` to run the app.
