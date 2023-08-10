@@ -1,0 +1,57 @@
+<html lang= "en">
+    <div class="container">
+    <div class="header">
+        <div class="row">
+        </div>
+    </div>
+
+    <div class="main">
+        <h1>Search for your favorite albuns</h1>
+
+        <div>
+            <%= form_with url: "/album_search", method: :get do |form| %>
+                <%= form.label :query, "Search for an artist or an album:" %>
+
+                <%= form.search_field :search, minlength:"3" %>
+
+                <%= form.submit "Search" %>
+            <% end %>
+        </div>        
+    </div>
+
+    <% if @search.present? %>
+        <p>Your search for "<%= @search %>" returned <%= @count %> results!</p>
+        <% if @count.zero? %>
+            <p>No albuns found. Please try again with a different search term.</p>
+        <% end%>
+    <% end%>
+
+    <% if @albums.present? %>
+        
+        <h1>Albums: </h1>
+            <table>
+                <tr>
+                    <th>Album Id</th>
+                    <th>Album Name</th>
+                    <th>Artist Id</th>
+                    <th>Artist Name</th>
+                    <th>Album Cover</th>
+                    <th>Favorite</th>
+                </tr>
+            
+                <% @albums.each_with_object({}) do |album| %> 
+                <tr>
+                    <td><div class="albumId col-md-8"> <%= album.first %> </div></td>
+                    <td><div class="albumName col-md-4"> <%= album.second[:albumName] %> </div></td>
+                    <td><div class="artistId col-md-8"> <%= album.second[:artistId] %> </div>
+                    <td><div class="artistName col-md-4"> <%= album.second[:artistName] %> </div></td>
+                    <td><div class="cover col-md-4"> <img src="<%= album.second[:thumbnail] %>"> </div></td> 
+                    <td><div class="favorite col-md-4"> 
+                        <%= image_tag(album.second[:favorite] ? 'favorite.png' : 'not_favorite.png') %>
+                        </div>
+                    </td> 
+                </tr>
+                <% end %>
+            </table>
+    <% end%> 
+</html>
