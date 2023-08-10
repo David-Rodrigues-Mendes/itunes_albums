@@ -20,9 +20,6 @@ Itunes Albums consumes the [Search iTunes API](https://developer.apple.com/libra
 Additionally, there is a "favorite" icon that allows the user to see the albums that 
 he selected from previous searches
 
-## Deployment
-Hotel Booking has not yet been deployed to production as I'm going to use it as an opportunity to learn and use infrastructure as code tools, CI/CD tools, and containerization tools (Terraform, Kafka, Docker, Kubernetes), and apply software architecture design principles to make a higly-available and higly-scalable system in the cloud. 
-
 ## Developing Locally
 To run the app in your machine, first make sure you have Rails installed. Then: 
 1. Clone the repo to your local machine:
