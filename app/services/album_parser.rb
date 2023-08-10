@@ -11,38 +11,34 @@ class AlbumParser
     @api_response = params.fetch(:api_response, {})
   end
     
-  # This service will format the albums to send to the controller, as well as inserting the records in the database
-  # for the "favorites" functionality 
+  # This service will format the albums received by the ITunes Search API response, # as well as inserting the album records in the database for the "favorites" functionality
+  #
+  # @return Array[Hash] - List of formatted albums with the info to be provided for the user
+  # Hash format: 
+  #    {key: albumId=>[Integer], values: album_info => [Hash]} 
   def call
+    parsed_albums = {}
     return {} if @api_response.blank?
 
-    add_albums_to_response
-  rescue StandardError => e
-    puts "Error: #{e.message}"
-  end
-
-  private
-
-  #
-  #
-  #
-  def add_albums_to_response
-    # check if results is an array
-    parsed_albums = {}
     albums = @api_response["results"]
-
     if albums.present?
-      albums.each_with_object({}) do |album|
+      albums.each do |album|
         parsed_albums = parsed_albums.merge(build_album_response(album))
       end
     end
 
     parsed_albums
+  rescue StandardError => e
+    raise "Error: #{e.message}"
   end
 
- #
- #
- #
+  private
+      
+  # Returns the formatted album response with the relevant information
+  #
+  # @return [Hash] - formatted album information
+  # Hash format: 
+  #    {key: albumId=>[Integer], values: album_info => [Hash]}  
   def build_album_response(album)
     albumId = album["collectionId"]
     return unless album["collectionType"] == "Album" && albumId.present?
