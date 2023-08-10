@@ -3,4 +3,7 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "articles#index"
+  root 'albums#home'
+  
+  get "/album_search", to: "albums#show"
 end
