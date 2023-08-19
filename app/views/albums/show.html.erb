@@ -1,12 +1,7 @@
 <html lang= "en">
-    <div class="container">
-    <div class="header">
-        <div class="row">
-        </div>
-    </div>
-
+<div class="album_page">
     <div class="main">
-        <h1>Search for your favorite albuns</h1>
+        <h1>Search for your favorite albums</h1>
 
         <div>
             <%= form_with url: "/album_search", method: :get do |form| %>
@@ -16,37 +11,36 @@
 
                 <%= form.submit "Search" %>
             <% end %>
-        </div>        
-    </div>
-
-    <% if @search.present? %>
-        <p>Your search for "<%= @search %>" returned <%= @count %> results!</p>
-        <% if @count.zero? %>
-            <p>No albuns found. Please try again with a different search term.</p>
+        </div>
+    
+        <% if @search.present? %>
+            <p>Your search for "<%= @search %>" returned <%= @count %> results!</p>
+            <% if @count.zero? %>
+                <p>No albuns found. Please try again with a different search term.</p>
+            <% end%>
         <% end%>
-    <% end%>
 
-    <% if @albums.present? %>
-        <h1>Albums: </h1>
-            <table>
-                <tr>
-                    <th>Album Cover</th>
-                    <th>Album Name</th>
-                    <th>Artist Name</th>
-                    <th>Favorite</th>
-                </tr>
-            
-                <% @albums.each_with_object({}) do |album| %> 
-                <tr>                
-                    <td><div class="cover col-md-4"> <img src="<%= album.second[:thumbnail] %>"> </div></td>
-                    <td><div class="albumName col-md-4"> <%= album.second[:albumName] %> </div></td>
-                    <td><div class="artistName col-md-4"> <%= album.second[:artistName] %> </div></td>
-                    <td><div class="favorite col-md-4"> 
-                        <%= image_tag(album.second[:favorite] ? 'favorite.png' : 'not_favorite.png') %>
-                        </div>
-                    </td> 
-                </tr>
-                <% end %>
-            </table>
-    <% end%> 
+        <% if @albums.present? %>
+            <h1>Albums: </h1>
+                <table>
+                    <tr>
+                        <th>Album Cover</th>
+                        <th>Album Name</th>
+                        <th>Artist Name</th>
+                        <th>Favorite</th>
+                    </tr>
+                    <% @albums.each_with_object({}) do |album| %> 
+                    <tr>                
+                        <td><div class="cover"> <img src="<%= album.second[:thumbnail] %>"> </div></td>
+                        <td><div class="albumName"> <%= album.second[:albumName] %> </div></td>
+                        <td><div class="artistName"> <%= album.second[:artistName] %> </div></td>
+                        <td><div class="favorite"> 
+                            <%= image_tag(album.second[:favorite] ? 'favorite.png' : 'not_favorite.png') %>
+                            </div>
+                        </td> 
+                    </tr>
+                    <% end %>
+                </table>
+        <% end %>
+    </div>
 </html>

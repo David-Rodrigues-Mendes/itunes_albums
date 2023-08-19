@@ -1,0 +1,28 @@
+html, body {
+  font-family:"Oxygen"; 
+  font-weight:300; 
+  background-color: lightseagreen;
+}
+
+/* Album Page */
+.album_page {
+    color:#fff;
+}
+
+.album_page h1 {
+  text-align: center;
+  margin-top:80px; 
+  margin-bottom:40px;
+  font-weight:300; 
+  font-size: 32px;
+}
+
+.main {
+    text-align: center;
+    color:white;
+    display: inline;
+  }
+
+.favorite {
+  margin:0 20px; 
+}
