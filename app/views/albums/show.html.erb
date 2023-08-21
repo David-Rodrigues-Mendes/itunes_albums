@@ -37,7 +37,7 @@
                         <td><div class="favorite"> 
                             <%= button_to image_tag(album.favorite ? 'favorite.png' : 'not_favorite.png'),
                                 { :action => "add_favorite",
-                                    :controller => "albums", :album_id => album.album_id, :search => @search, :albumIds => @albums.pluck(:album_id)}
+                                    :controller => "albums", :album_id => album.album_id, :search => @search}
                             %>
                             </div>
                         </td> 

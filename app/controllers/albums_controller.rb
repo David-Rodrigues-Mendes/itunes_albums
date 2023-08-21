@@ -12,7 +12,7 @@ class AlbumsController < ApplicationController
 
     albumIds = Itunes::AlbumSearch.new(@search).call
 
-    albums = Album.where(album_id: albumIds)
+    albums = Album.where(album_id: albumIds).order(favorite: :desc)
     @albums = albums
 
     render :show
@@ -20,19 +20,16 @@ class AlbumsController < ApplicationController
 
   # Add the album as the favorite
   #
-  # @params [Array<Integer>] The album ids for the search
   # @params [Integer] The album id to add as favorite
   #
   # return @albums [Array<Album>] The albums obtained to show to the user
   def add_favorite
-    albumIds = params["albumIds"]
+    search = params["search"]
+  
     itunesAlbums = Album.find_by!(album_id: params["album_id"])
-
     itunesAlbums.update!(favorite: !itunesAlbums.favorite)
 
-    @albums = Album.where(album_id: albumIds)
-
-    render :show
+    redirect_to album_search_path(request.parameters)
   end
 
   # Get the favorite albums to show the user
