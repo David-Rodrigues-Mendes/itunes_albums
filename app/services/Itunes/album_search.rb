@@ -15,35 +15,29 @@ module Itunes
       @params = params
       @search = search
 
-      @parsed_response = {}
+      @album_ids = []
     end
 
-    # Based on the search term, this service will return all the iTunes albums that match the submitted name
-    # and the albums of the artists that match the submitted name.
+    # Based on the search term, this service will return all the iTunes album ids
+    # that match the submitted name and the albums of the artists that match the submitted name.
     #
-    # @return Hash - response with the formatted albums and the number of albums returned
-    # Hash format: 
-    #    {"resultCount"=>[String], "results" => Array[Hash]}
+    # @return [Integer] - a list of album ids
     def call
-      return nil if @search.blank?
-      
-      build_album_response
+      return [] if @search.blank?
 
-      resultCount = @parsed_response.present? ? @parsed_response.count : 0 
-
-      { "resultCount": resultCount, "results": @parsed_response }
+      build_album_ids
     rescue StandardError => e
       raise "An error has occurred while trying to get Itunes albuns: #{e.message}" 
     end
 
     private
 
-    # Builds the album response based on the API calls needed to get all the information about the albuns and the artists
+    # Builds the album ids based on the API calls needed to get all the information about the albuns and the artists
     # related to the search term of the user.
-    # Makes the API calls to obtain the album information and formats the results with the relevant information~
-    # for the user, by adding the results to the parsed response that will be returned by the service call
+    # Makes the API calls to obtain the album information, adds the albums to the database or gets them if they already exist
     #
-    def build_album_response
+    # @return [Integer] - a list of album ids
+    def build_album_ids
       album_api_response = Itunes::ApiSearch.new(album_input_params).call
       album_artist_api_resp = Itunes::ApiSearch.new(music_artist_input_params).call
 
@@ -52,19 +46,43 @@ module Itunes
 
       parse_album_response(album_api_response)
       parse_album_response(album_artist_api_resp)
+
+      @album_ids.uniq
     end
 
-    # Parses the response obtained by the Itunes Search API in order to format the albums with the
+    # Parses the response obtained by the Itunes Search API in order to obtain the albums with the
     # relevant information to be returned to the user
     #
-    # return [Hash] - the current album response will receive the new formatted albums
+    # @return [Integer] - a list of album ids from the ITunes Search API
     def parse_album_response(album_api_response)
-      return unless album_api_response.present?
+      return [] unless album_api_response.present?
 
-      params = { api_response: album_api_response }
-      parsed_albums = AlbumParser.new(params).call
-      
-      @parsed_response = @parsed_response.merge(parsed_albums) if parsed_albums.present?
+      albums = album_api_response["results"]
+
+      build_album_response(albums)
+    rescue StandardError => e
+      raise "Error: #{e.message}"
+    end
+
+    # Parses the albums received by the ITunes Search API response, 
+    # and get the album ids as well as inserting the album records in the database
+    #
+    # @return [Integer] - a list of album ids from the ITunes Search API
+    def build_album_response(albums)
+      return [] unless albums.present?
+
+      albums = albums.select { |album|
+        album["collectionType"] == "Album" && album["collectionId"].present?
+      }
+
+      if albums.present?
+        albums.each do |album|
+          Album.build_album(album, album["collectionId"])
+        end
+
+        albumIds = albums.pluck("collectionId")
+        @album_ids += albumIds if albumIds.present?
+      end
     end
 
     # The input params to be used in the ITunes API call to obtain the albuns related to the search term

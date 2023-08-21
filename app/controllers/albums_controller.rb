@@ -6,15 +6,40 @@ class AlbumsController < ApplicationController
   #
   # @search [String] The search term to get the respective albums through the ITunes search API
   #
-  # @count [Integer] Number of albuns obtained
-  # @albums [JSON] The albums obtained to show to the user
+  # return @albums [Array<Album>] The albums obtained to show to the user
   def show
     return nil if @search.blank?
 
-    search_response = Itunes::AlbumSearch.new(@search).call
+    albumIds = Itunes::AlbumSearch.new(@search).call
 
-    @count = search_response[:resultCount]
-    @albums = search_response[:results]
+    albums = Album.where(album_id: albumIds)
+    @albums = albums
+
+    render :show
+  end
+
+  # Add the album as the favorite
+  #
+  # @params [Array<Integer>] The album ids for the search
+  # @params [Integer] The album id to add as favorite
+  #
+  # return @albums [Array<Album>] The albums obtained to show to the user
+  def add_favorite
+    albumIds = params["albumIds"]
+    itunesAlbums = Album.find_by!(album_id: params["album_id"])
+
+    itunesAlbums.update!(favorite: !itunesAlbums.favorite)
+
+    @albums = Album.where(album_id: albumIds)
+
+    render :show
+  end
+
+  # Get the favorite albums to show the user
+  #
+  # return @albums [Array<Album>] The favorite albums to show to the user
+  def get_favorites
+    @albums = Album.where(favorite: true)
 
     render :show
   end
