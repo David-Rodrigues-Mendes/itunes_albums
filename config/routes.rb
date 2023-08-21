@@ -6,4 +6,6 @@ Rails.application.routes.draw do
   root 'albums#home'
   
   get "/album_search", to: "albums#show"
+
+  post "/add_favorite", to: "albums#add_favorite"
 end

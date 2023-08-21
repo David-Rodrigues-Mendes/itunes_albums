@@ -14,8 +14,8 @@
         </div>
     
         <% if @search.present? %>
-            <p>Your search for "<%= @search %>" returned <%= @count %> results!</p>
-            <% if @count.zero? %>
+            <p>Your search for "<%= @search %>" returned <%= @albums.count %> results!</p>
+            <% if @albums.count.zero? %>
                 <p>No albuns found. Please try again with a different search term.</p>
             <% end%>
         <% end%>
@@ -31,11 +31,14 @@
                     </tr>
                     <% @albums.each_with_object({}) do |album| %> 
                     <tr>                
-                        <td><div class="cover"> <img src="<%= album.second[:thumbnail] %>"> </div></td>
-                        <td><div class="albumName"> <%= album.second[:albumName] %> </div></td>
-                        <td><div class="artistName"> <%= album.second[:artistName] %> </div></td>
+                        <td><div class="cover"> <img src="<%= album.thumbnail %>"> </div></td>
+                        <td><div class="albumName"> <%= album.title %> </div></td>
+                        <td><div class="artistName"> <%= album.subtitle %> </div></td>
                         <td><div class="favorite"> 
-                            <%= image_tag(album.second[:favorite] ? 'favorite.png' : 'not_favorite.png') %>
+                            <%= button_to image_tag(album.favorite ? 'favorite.png' : 'not_favorite.png'),
+                                { :action => "add_favorite",
+                                    :controller => "albums", :album_id => album.album_id, :search => @search, :albumIds => @albums.pluck(:album_id)}
+                            %>
                             </div>
                         </td> 
                     </tr>
